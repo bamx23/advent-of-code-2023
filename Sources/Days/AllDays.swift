@@ -9,4 +9,5 @@ import Foundation
 import Shared
 
 public let allDays: [Day.Type] = [
+    Day01.self,
 ]
