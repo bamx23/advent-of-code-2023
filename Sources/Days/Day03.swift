@@ -76,38 +76,35 @@ public struct Day03: Day {
         let map = parse()
         let (h, w) = (map.count, map.first!.count)
 
-        let gearCh = "*".first!
-        var values = [Int]()
+        var gearRatios = [Int]()
         for y in 0..<h {
             for x in 0..<w {
-                if case .symbol(gearCh) = map[y][x] {
-                    var subValues = [Int]()
-                    var visited = [[Bool]](repeating: [Bool](repeating: false, count: w), count: h)
+                if case .symbol("*") = map[y][x] {
+                    var values = [Int]()
+                    var visited = [[Bool]](repeating: [Bool](repeating: false, count: 3), count: 3)
                     for dy in -1...1 {
                         for dx in -1...1 {
                             if dx == 0 && dy == 0 { continue }
                             let (ny, nx) = (y + dy, x + dx)
                             if ny < 0 || nx < 0 || ny >= h || nx >= w { continue }
-                            if case .digit = map[ny][nx], visited[ny][nx] == false {
+                            if case .digit = map[ny][nx], visited[dy + 1][dx + 1] == false {
                                 var (l, r) = (nx, nx)
                                 while l >= 0, case .digit = map[ny][l] { l -= 1 }
                                 while r < h, case .digit = map[ny][r] { r += 1 }
                                 var value = 0
                                 for cx in (l + 1)..<r {
                                     guard case let .digit(dig) = map[ny][cx] else { fatalError() }
-                                    visited[ny][cx] = true
+                                    if abs(cx - nx) <= 1 { visited[dy + 1][cx - nx + 1] = true }
                                     value = value * 10 + dig
                                 }
-                                subValues.append(value)
+                                values.append(value)
                             }
                         }
                     }
-                    if subValues.count == 2 {
-                        values.append(subValues.first! * subValues.last!)
-                    }
+                    if values.count == 2 { gearRatios.append(values.reduce(1, *)) }
                 }
             }
         }
-        return "\(values.reduce(0, +))"
+        return "\(gearRatios.reduce(0, +))"
     }
 }
