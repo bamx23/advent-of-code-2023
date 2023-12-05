@@ -13,4 +13,5 @@ public let allDays: [Day.Type] = [
     Day02.self,
     Day03.self,
     Day04.self,
+    Day05.self,
 ]
