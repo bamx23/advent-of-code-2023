@@ -24,16 +24,22 @@ public struct Day06: Day {
         return zip(nums.first!, nums.last!).map { (time: $0.0, dst: $0.1) }
     }
 
+    private func solve(_ d: (time: Int, dst: Int)) -> Int {
+        // time = a + b
+        // a * b > dst <=> (time - b) * b > dst <=> -b^2 + time * b - dst > 0
+        // Zeros: (time +- sqrt(time ^ 2 - 4 * dst) / 2
+        let f = sqrt(Double(d.time * d.time - 4 * d.dst))
+        var (b1, b2) = (
+            Int((Double(d.time) - f) / 2.0),
+            Int((Double(d.time) + f) / 2.0)
+        )
+        if (d.time - b1) * b1 <= d.dst { b1 += 1 }
+        if (d.time - b2) * b2 <= d.dst { b2 -= 1 }
+        return b2 - b1 + 1
+    }
+
     public func part01() -> String {
-        let data = parse()
-        let result = data
-            .map { d in
-                (1..<d.time)
-                    .map { t in (d.time - t) * t }
-                    .filter { $0 > d.dst }
-                    .count
-            }
-            .reduce(1, *)
+        let result = parse().map(solve).reduce(1, *)
         return "\(result)"
     }
 
@@ -41,10 +47,7 @@ public struct Day06: Day {
         let data = parse()
         let time = Int(data.map(\.time.description).joined())!
         let dst = Int(data.map(\.dst.description).joined())!
-        let result = (1..<time)
-            .map { t in (time - t) * t }
-            .filter { $0 > dst }
-            .count
+        let result = solve((time, dst))
         return "\(result)"
     }
 }
