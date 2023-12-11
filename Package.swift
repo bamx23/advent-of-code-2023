@@ -13,6 +13,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-collections.git", branch: "release/1.1"),
+        .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.2.0"),
     ],
     targets: [
         .executableTarget(
@@ -45,6 +46,7 @@ let package = Package(
             dependencies: [
                 "Shared",
                 .product(name: "Collections", package: "swift-collections"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
             ]
         ),
         .target(name: "Shared"),
