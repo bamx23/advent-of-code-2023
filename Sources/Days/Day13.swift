@@ -28,59 +28,32 @@ public struct Day13: Day {
             }
     }
 
-    private func mirrorCols(_ map: [[Bool]]) -> Int? {
-        var mirrors = Set(map.first!.indices.dropFirst())
-        for line in map {
-            var nextMirrors = mirrors
-            for m in mirrors {
-                for idx in 0..<m {
-                    let (a, b) = (m - idx - 1, m + idx)
-                    guard line.indices.contains(a) && line.indices.contains(b) else { continue }
-                    if line[a] != line[b] {
-                        nextMirrors.remove(m)
-                        break
-                    }
-                }
+    private static func diff<T: Equatable>(_ m: Int, _ line: [T]) -> Int {
+        var count = 0
+        for idx in 0..<min(m, line.count - m) {
+            if line[m - idx - 1] != line[m + idx] {
+                count += 1
+                if count == 2 { break } // We don't need more detailed diffs
             }
-            mirrors = nextMirrors
         }
-        guard mirrors.count == 1 else { return nil }
-        return mirrors.first!
+        return count
     }
 
-    private func mirrorExCols(_ map: [[Bool]]) -> Int? {
-
-        func diff(_ m: Int, _ lineIdx: Int) -> Int {
-            var count = 0
-            for idx in 0..<m {
-                let (a, b) = (m - idx - 1, m + idx)
-                guard map[lineIdx].indices.contains(a) && map[lineIdx].indices.contains(b) else { continue }
-                if map[lineIdx][a] != map[lineIdx][b] {
-                    count += 1
-                    if count == 2 { break } // We don't need more detailed diffs
-                }
-            }
-            return count
-        }
-
+    private func mirrorCols(_ map: [[Bool]], _ isFixNeeded: Bool = false) -> Int? {
         func check(_ m: Int, _ fromLine: Int, _ allowFix: Bool) -> Bool {
             for lIdx in fromLine..<map.count {
-                switch diff(m, lIdx) {
-                case 0: 
-                    break
-                case 1:
-                    return allowFix ? check(m, lIdx + 1, false) : false
-                default:
-                    return false
+                switch Self.diff(m, map[lIdx]) {
+                case 0: break
+                case 1: return allowFix ? check(m, lIdx + 1, false) : false
+                default: return false
                 }
             }
             return allowFix == false // allowFix needs to be false by here
         }
 
         let mirrors = map.first!.indices.dropFirst()
-            .filter { check($0, 0, true) }
-        guard mirrors.count == 1 else { return nil }
-        return mirrors.first!
+            .filter { check($0, 0, isFixNeeded) }
+        return mirrors.count == 1 ? mirrors.first! : nil
     }
 
     public func part01() -> String {
@@ -92,7 +65,7 @@ public struct Day13: Day {
 
     public func part02() -> String {
         let result = parse()
-            .compactMap { map in mirrorExCols(map) ?? mirrorExCols(map.transpose()).map { $0 * 100 } }
+            .compactMap { map in mirrorCols(map, true) ?? mirrorCols(map.transpose(), true).map { $0 * 100 } }
             .reduce(0, +)
         return "\(result)"
     }
