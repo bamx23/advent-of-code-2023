@@ -24,3 +24,18 @@ public func +(lhs: Pos, rhs: Pos) -> Pos {
 public func -(lhs: Pos, rhs: Pos) -> Pos {
     .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 }
+
+public extension Pos {
+    func manhDist(_ other: Pos) -> Int {
+        return abs(other.x - x) + abs(other.y - y)
+    }
+}
+
+public extension Array {
+    func at<T>(_ pos: Pos) -> Optional<T> where Element == Array<T> {
+        guard 0 <= pos.y && pos.y < count else { return nil }
+        let row = self[pos.y]
+        guard 0 <= pos.x && pos.x < row.count else { return nil }
+        return row[pos.x]
+    }
+}

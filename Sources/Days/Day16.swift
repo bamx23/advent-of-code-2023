@@ -21,13 +21,6 @@ public struct Day16: Day {
         case splitV = "|"
     }
 
-    enum Dir {
-        case up
-        case down
-        case left
-        case right
-    }
-
     struct Beam: Hashable {
         var pos: Pos
         var dir: Dir
@@ -80,13 +73,6 @@ public struct Day16: Day {
 }
 
 extension Array where Element == [Day16.Tile] {
-    func at(_ pos: Pos) -> Day16.Tile? {
-        guard 0 <= pos.y && pos.y < count else { return nil }
-        let row = self[pos.y]
-        guard 0 <= pos.x && pos.x < row.count else { return nil }
-        return row[pos.x]
-    }
-
     func entries() -> [Day16.Beam] {
         let (h, w) = (count, first!.count)
         let horizontal = (0..<w)
@@ -103,23 +89,12 @@ extension Array where Element == [Day16.Tile] {
     }
 }
 
-extension Day16.Dir {
-    var delta: Pos {
-        switch self {
-        case .up:       return .init(x: 0, y: -1)
-        case .down:     return .init(x: 0, y: 1)
-        case .left:     return .init(x: -1, y: 0)
-        case .right:    return .init(x: 1, y: 0)
-        }
-    }
-}
-
 extension Day16.Tile {
     func apply(_ beam: Day16.Beam) -> [Day16.Beam] {
         func pass() -> Day16.Beam {
             return .init(pos: beam.pos + beam.dir.delta, dir: beam.dir)
         }
-        func redirect(_ dir: Day16.Dir) -> Day16.Beam {
+        func redirect(_ dir: Dir) -> Day16.Beam {
             return .init(pos: beam.pos + dir.delta, dir: dir)
         }
 
