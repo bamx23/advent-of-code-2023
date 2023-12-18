@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum Dir {
+public enum Dir: CaseIterable {
     case up
     case down
     case left

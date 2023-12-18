@@ -25,6 +25,10 @@ public func -(lhs: Pos, rhs: Pos) -> Pos {
     .init(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
 }
 
+public func *(lhs: Pos, rhs: Int) -> Pos {
+    .init(x: lhs.x * rhs, y: lhs.y * rhs)
+}
+
 public extension Pos {
     func manhDist(_ other: Pos) -> Int {
         return abs(other.x - x) + abs(other.y - y)
