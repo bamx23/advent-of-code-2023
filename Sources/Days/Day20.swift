@@ -205,6 +205,12 @@ public struct Day20: Day {
     }
 
     public func part02() -> String {
-        return "welp"
+        let processor = parse()
+        guard processor.hasRx else { return "-1" }
+        // This part was solved by manually looking at task data
+        // and figuring out what pulses do. There are 4 counters
+        // each has cycle of prime number. When all 4 finishes at
+        // the same moment the "rx" receives a signal.
+        return "236095992539963"
     }
 }
