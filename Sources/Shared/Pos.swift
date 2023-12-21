@@ -33,6 +33,16 @@ public extension Pos {
     func manhDist(_ other: Pos) -> Int {
         return abs(other.x - x) + abs(other.y - y)
     }
+
+    func wrap(w: Int, h: Int) -> Pos {
+        let x = x < 0
+        ? (w - ((-x) % w)) % w
+        : (x % w)
+        let y = y < 0
+        ? (h - ((-y) % h)) % h
+        : (y % h)
+        return .init(x: x, y: y)
+    }
 }
 
 public extension Array {
